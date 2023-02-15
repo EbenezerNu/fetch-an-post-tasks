@@ -6,27 +6,22 @@ import NewTask from "./components/NewTask/NewTask";
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  const transformTasks = (tasksObj) => {
-    const loadedTasks = [];
-    for (const taskKey in tasksObj) {
-      loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
-    }
-    setTasks(loadedTasks);
-  };
-
-  const {
-    isLoading,
-    error,
-    sendRequest: fetchTasks,
-  } = useFetch(
-    {
-      url: "https://react-http-d4113-default-rtdb.firebaseio.com/tasks.json",
-    },
-    transformTasks
-  );
+  const { isLoading, error, sendRequest: fetchTasks } = useFetch();
 
   useEffect(() => {
-    fetchTasks();
+    const transformTasks = (tasksObj) => {
+      const loadedTasks = [];
+      for (const taskKey in tasksObj) {
+        loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
+      }
+      setTasks(loadedTasks);
+    };
+    fetchTasks(
+      {
+        url: "https://react-http-d4113-default-rtdb.firebaseio.com/tasks.json",
+      },
+      transformTasks
+    );
   }, []);
 
   const taskAddHandler = (task) => {

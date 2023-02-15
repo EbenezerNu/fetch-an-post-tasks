@@ -3,27 +3,32 @@ import TaskForm from "./TaskForm";
 import useFetch from "../../hooks/use-fetch";
 
 const NewTask = (props) => {
-  const enterTaskCallback = (data) => {
+  const enterTaskCallback = (taskText, data) => {
+    console.log("New Task : ", taskText);
     const generatedId = data.name; // firebase-specific => "name" contains generated id
-    const createdTask = { id: generatedId, text: data.name };
+    const createdTask = { id: generatedId, text: taskText };
     props.onAddTask(createdTask);
   };
 
-  const { isLoading, error, sendRequest } = useFetch(
-    {
-      url: "https://react-http-d4113-default-rtdb.firebaseio.com/tasks.json",
-      method: "POST",
-      body: { text: "Hello" },
-      headers: {
-        "Content-Type": "application/json",
+  const { isLoading, error, sendRequest } = useFetch();
+
+  const compiledTask = (taskText) => {
+    sendRequest(
+      {
+        url: "https://react-http-d4113-default-rtdb.firebaseio.com/tasks.json",
+        method: "POST",
+        body: { text: taskText },
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    },
-    enterTaskCallback
-  );
+      enterTaskCallback.bind(null, taskText)
+    );
+  };
 
   return (
     <Section>
-      <TaskForm onEnterTask={sendRequest} loading={isLoading} />
+      <TaskForm onEnterTask={compiledTask} loading={isLoading} />
       {error && <p>{error}</p>}
     </Section>
   );

@@ -1,9 +1,9 @@
-import { useState } from "react";
-const useFetch = (props, dataHandler) => {
+import { useState, useCallback } from "react";
+const useFetch = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendRequest = async () => {
+  const sendRequest = useCallback(async (props, dataHandler) => {
     setError(null);
     setIsLoading(true);
     try {
@@ -23,7 +23,7 @@ const useFetch = (props, dataHandler) => {
       setError(err.message || "Something went wrong!");
     }
     setIsLoading(false);
-  };
+  }, []);
 
   return {
     isLoading,
